@@ -10,28 +10,28 @@ Zero Wi-Fi, Bluetooth, internet, or cables. Pure Python 3.10+, deterministic DSP
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  SEND PATH                                                                  │
-│  ────────                                                                  │
-│  ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌──────────┐     │
-│  │  TEXT   │──▶│ ENCRYPT │──▶│  FRAME  │──▶│   FEC   │──▶│ MODULATE │     │
-│  │ / FILE  │   │AES-256  │   │ + CRC32 │   │RS(255,  │   │ 4-FSK +  │     │
-│  │         │   │  GCM    │   │ + CHUNK │   │  201)   │   │  CHIRP   │     │
-│  └─────────┘   └─────────┘   └─────────┘   └─────────┘   └──────────┘     │
-│       │            │            │            │             │               │
-│       ▼            ▼            ▼            ▼             ▼               │
-│  plaintext    ciphertext   200B frames  255B codewords  44.1 kHz float32  │
-│  (or binary)  (salt+nonce) 188B payload   54 parity      audio buffer     │
+│  ────────                                                                   │
+│  ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌──────────┐       │
+│  │  TEXT   │──▶│ ENCRYPT │──▶│  FRAME  │──▶│   FEC   │──▶│ MODULATE │       │
+│  │ / FILE  │   │AES-256  │   │ + CRC32 │   │RS(255,  │   │ 4-FSK +  │       │
+│  │         │   │  GCM    │   │ + CHUNK │   │  201)   │   │  CHIRP   │       │
+│  └─────────┘   └─────────┘   └─────────┘   └─────────┘   └──────────┘       │
+│       │            │            │            │             │                │
+│       ▼            ▼            ▼            ▼             ▼                │
+│  plaintext    ciphertext   200B frames  255B codewords  44.1 kHz float32    │
+│  (or binary)  (salt+nonce) 188B payload   54 parity      audio buffer       │
 │                                                                             │
 │  RECEIVE PATH                                                               │
 │  ─────────────                                                              │
-│  ┌──────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐     │
-│  │ CAPTURE  │──▶│ SYNC    │──▶│DEMODULATE│──▶│  FEC    │──▶│ DEFRAME │     │
-│  │  AUDIO   │   │ CHIRP   │   │  4-FSK  │   │  DECODE │   │+ DECRYPT│     │
-│  │ 44.1kHz  │   │  CORR   │   │ GOERTZEL│   │ RS DEC  │   │ CRC+AES │     │
-│  └──────────┘   └─────────┘   └─────────┘   └─────────┘   └─────────┘     │
-│       │            │            │            │             │               │
-│       ▼            ▼            ▼            ▼             ▼               │
-│  float32      sample idx   2-bit syms   201B msg      plaintext or        │
-│  buffer       + corr       (0-3)       (or fail)     saved file           │
+│  ┌──────────┐   ┌─────────┐   ┌──────────┐   ┌─────────┐   ┌──────────┐     │
+│  │ CAPTURE  │──▶│ SYNC    │──▶│DEMODULATE│──▶│  FEC    │──▶│ DEFRAME  │     │
+│  │  AUDIO   │   │ CHIRP   │   │  4-FSK   │   │  DECODE │   │+ DECRYPT │     │
+│  │ 44.1kHz  │   │  CORR   │   │ GOERTZEL │   │ RS DEC  │   │ CRC+AES  │     │
+│  └──────────┘   └─────────┘   └──────────┘   └─────────┘   └──────────┘     │
+│       │            │            │            │             │                │
+│       ▼            ▼            ▼            ▼             ▼                │
+│  float32      sample idx   2-bit syms   201B msg      plaintext or          │
+│  buffer       + corr       (0-3)       (or fail)     saved file             │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -39,11 +39,11 @@ Zero Wi-Fi, Bluetooth, internet, or cables. Pure Python 3.10+, deterministic DSP
 ## Frame Format (Pre-RS, 200 bytes)
 
 ```
-┌──────┬──────────┬──────────┬──────────┬──────────┬──────────┬────────┐
+┌──────┬──────────┬──────────┬──────────┬───────────┬───────────┬────────┐
 │MAGIC │VER_FLAGS │ CHUNK_ID │ TOTAL_CH │PAYLOAD_LEN│  PAYLOAD  │ CRC32  │
-│ 2B   │   1B     │   2B     │   2B     │   2B      │  188B    │  4B    │
+│ 2B   │   1B     │   2B     │   2B     │   2B      │  188B     │  4B    │
 │0xEB90│ v1|flags │  0..N-1  │    N     │   0..188  │   data    │ IEEE   │
-└──────┴──────────┴──────────┴──────────┴──────────┴──────────┴────────┘
+└──────┴──────────┴──────────┴──────────┴───────────┴───────────┴────────┘
 Total: 13 bytes overhead + 188 bytes payload = 200 bytes = RS_K
 ```
 

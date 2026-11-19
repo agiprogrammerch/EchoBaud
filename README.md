@@ -1,5 +1,11 @@
 # EchoBaud
 
+**Developer:** Agi Hacker  
+**Email:** agiprogrammer@gmail.com  
+**Motto:** Build, not Bought
+
+---
+
 **Air-gapped acoustic modem for encrypted text/file transfer via speakers and microphone.**
 
 Zero Wi-Fi, Bluetooth, internet, or cables. Pure Python 3.10+, deterministic DSP, production-grade.

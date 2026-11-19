@@ -43,7 +43,9 @@ jobs:
         run: |
           pip install dist/*.whl
           echobaud --help
-          echobaud benchmark --mode audible 2>&1 | head -20
+          # Test basic CLI functionality (skip benchmark in CI due to no audio devices)
+          echobaud send --text "test" --wav-out /tmp/test.wav --no-play
+          echobaud listen --wav-in /tmp/test.wav
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

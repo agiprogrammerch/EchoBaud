@@ -1,6 +1,6 @@
 # EchoBaud
 
-**Developer:** Arush Shakya 
+**Developer:** Arush Shakya                                                                                  
 **Email:** agiprogrammer@gmail.com  
 **Motto:** Build, not Bought
 
